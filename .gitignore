@@ -10,8 +10,8 @@
 !.yarn/releases
 !.yarn/versions
 
-/prisma/generate
-/prisma/migrations
+prisma/generated
+prisma/migrations
 
 
 # testing

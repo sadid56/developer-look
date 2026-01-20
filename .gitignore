@@ -10,6 +10,10 @@
 !.yarn/releases
 !.yarn/versions
 
+/prisma/generate
+/prisma/migrations
+
+
 # testing
 /coverage
 

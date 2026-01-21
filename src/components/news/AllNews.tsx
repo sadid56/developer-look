@@ -7,10 +7,14 @@ import { Button } from "../ui/button";
 import NewsCardSkeleton from "./NewsCardSkeleton";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useState } from "react";
+import useDebounce from "../hooks/useDebounchSearch";
 
 const AllNews = () => {
-  const [category, setCategory] = useState("news");
-  const { data, isLoading, isError, error } = useAllNews({ category: category });
+  const [category, setCategory] = useState("all");
+  const [search, setSearch] = useState("");
+  const [ln, setLn] = useState("all");
+  const debouncedSearch = useDebounce(search, 500);
+  const { data, isLoading, isError, error } = useAllNews({ category: category, search: debouncedSearch, ln });
 
   if (isLoading) {
     return (
@@ -40,18 +44,40 @@ const AllNews = () => {
 
   return (
     <div className='container mx-auto'>
-      <Select value={category} onValueChange={(value) => setCategory(value)}>
-        <SelectTrigger className='w-[180px]'>
-          <SelectValue placeholder='Select a category' />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectGroup>
-            <SelectLabel>Category</SelectLabel>
-            <SelectItem value='news'>News</SelectItem>
-            <SelectItem value='sports'>Sports</SelectItem>
-          </SelectGroup>
-        </SelectContent>
-      </Select>
+      <div className='flex items-center gap-2'>
+        <Select value={category} onValueChange={(value) => setCategory(value)}>
+          <SelectTrigger className='w-[180px]'>
+            <SelectValue placeholder='Select a category' />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              <SelectLabel>Category</SelectLabel>
+              <SelectItem value='all'>All</SelectItem>
+              <SelectItem value='news'>News</SelectItem>
+              <SelectItem value='sports'>Sports</SelectItem>
+            </SelectGroup>
+          </SelectContent>
+        </Select>
+        <Select value={ln} onValueChange={(value) => setLn(value)}>
+          <SelectTrigger className='w-[180px]'>
+            <SelectValue placeholder='Select a category' />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              <SelectLabel>Language</SelectLabel>
+              <SelectItem value='all'>All</SelectItem>
+              <SelectItem value='en'>English</SelectItem>
+              <SelectItem value='bn'>Bangladesh</SelectItem>
+            </SelectGroup>
+          </SelectContent>
+        </Select>
+        <input
+          onChange={(e) => setSearch(e.target.value)}
+          value={search}
+          className='px-8 py-1 rounded-md border border-gray-400'
+          placeholder='Search...'
+        />
+      </div>
       <div className='container mx-auto grid grid-cols-3 py-5 gap-4'>
         {data.map((article: Article, idx: number) => (
           <NewsCard key={idx + 1} article={article} />
